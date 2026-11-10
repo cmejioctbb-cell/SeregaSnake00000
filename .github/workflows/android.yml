@@ -10,8 +10,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Download project
+      - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Extract Android project
+        run: |
+          unzip -o SeregaSnakeAndroid_v2_GitHubBuild.zip
+          cp -a SeregaSnakeAndroid/. .
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -22,6 +27,9 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Install Android SDK packages
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
@@ -30,7 +38,7 @@ jobs:
       - name: Build APK
         run: gradle assembleDebug
 
-      - name: Save APK
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Serega-Champion-APK
